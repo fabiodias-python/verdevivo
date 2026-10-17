@@ -23,7 +23,6 @@ O Verdevivo nasceu com um objetivo: **tornar mais fácil para qualquer pessoa, m
 - Conteúdo educativo sobre o que são, como funcionam e quais os benefícios
 - Orientações para implantação (escolha do local, solo, plantas, manutenção)
 - Página de contato para pessoas e órgãos públicos interessados
-- [Outra funcionalidade planejada]
 
 ## Tecnologias
 
@@ -57,30 +56,6 @@ using (true);
 
 Escrita (insert, update, delete) deve ficar restrita a usuários autenticados.
 
-## Como rodar localmente
-
-1. Clone o repositório:
-   ```bash
-   git clone [URL-DO-REPOSITORIO]
-   cd [NOME-DA-PASTA]
-   ```
-2. Instale as dependências (se houver):
-   ```bash
-   npm install
-   ```
-3. Crie um arquivo `.env` na raiz com as variáveis do Supabase:
-   ```env
-   SUPABASE_URL=https://[SEU-PROJETO].supabase.co
-   SUPABASE_ANON_KEY=[SUA-CHAVE-ANON]
-   ```
-   Os valores ficam em **Project Settings > API** no painel do Supabase.
-4. Inicie o projeto:
-   ```bash
-   npm run dev
-   ```
-
-> Nunca publique a chave `service_role` no frontend nem no repositório. Use somente a chave `anon` e proteja os dados com RLS.
-
 ## Cadastrando projetos
 
 Pelo painel do Supabase (**Table Editor > projects > Insert**) ou via SQL:
@@ -97,7 +72,7 @@ values (
 
 ## Deploy
 
-O site é publicado no **GitHub Pages**: [https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO](https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO)
+O site é publicado no **GitHub Pages**: https://fabiodias-python.github.io/verdevivo/
 
 Para atualizar, basta enviar as alterações para a branch configurada em **Settings > Pages**:
 
@@ -124,11 +99,3 @@ Quer ajudar a espalhar jardins de chuva pelo Brasil? Você pode:
 - [ ] Material de apoio para gestores estaduais e municipais
 - [ ] [Outra melhoria planejada]
 
-## Contato
-
-**Fábio**
-- [LinkedIn / GitHub / e-mail]
-
-## Licença
-
-[Ex.: MIT]
