@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#174d36">
+<meta name="description" content="VerdeVivo Brasil — educação ambiental, jardins de chuva e sustentabilidade comunitária.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="VerdeVivo Brasil | Sustentabilidade inteligente">
+<meta property="og:description" content="Aprenda sobre jardins de chuva, simule volumes de chuva e cadastre iniciativas verdes.">
+<meta property="og:url" content="https://fabiodias-python.github.io/verdevivo/">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://fabiodias-python.github.io/verdevivo/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌱%3C/text%3E%3C/svg%3E">
+<title>VerdeVivo Brasil | Sustentabilidade inteligente</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+:root{--green:#174d36;--green2:#28734c;--mint:#e5f4e7;--lime:#d7f5b7;--ink:#193328;--muted:#5d6e64;--paper:#f7faf6;--line:#e0e9df;--blue:#26678c;--shadow:0 12px 35px rgba(23,77,54,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.55}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.wrap{width:min(1120px,calc(100% - 36px));margin:auto}
+.topbar{background:var(--green);color:#fff;padding:14px 0;position:sticky;top:0;z-index:20}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:800;font-size:1.12rem}
+.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--lime);color:var(--green);font-size:23px}
+.brand small{display:block;font-size:.72rem;font-weight:500;color:#d7e8da}
+.navlinks{display:flex;gap:7px;flex-wrap:wrap}
+.navlinks a{border:1px solid transparent;color:#eaf5eb;padding:9px 12px;border-radius:10px;font-weight:650;text-decoration:none}
+.navlinks a:hover,.navlinks a.active{background:#ffffff1a;border-color:#ffffff33}
+.hero{background:linear-gradient(125deg,#174d36,#286e4a);color:#fff;padding:64px 0 56px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+.eyebrow{display:inline-flex;gap:8px;background:#ffffff18;border:1px solid #ffffff35;border-radius:999px;padding:7px 12px;font-size:.82rem;color:#e5f4e7}
+.hero h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1.04;letter-spacing:-.045em;margin:18px 0}
+.hero h1 span{color:var(--lime)}.hero p{font-size:1.08rem;max-width:600px;color:#e0eee3}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:transform .15s,filter .15s}
+.btn-primary{background:var(--lime);color:var(--green)}.btn-light{background:#ffffff16;color:#fff;border:1px solid #ffffff48}
+.btn-green{background:var(--green);color:#fff}.btn-outline{background:#fff;color:var(--green);border:1px solid var(--line)}
+.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.hero-art{border:1px solid #ffffff35;border-radius:28px;background:linear-gradient(155deg,#ffffff20,#ffffff08);padding:22px;display:flex;justify-content:center}
+.landscape{width:100%;max-width:390px;aspect-ratio:1.1;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(#bfe6ee 0 42%,#e8e5bf 42% 100%)}
+.sun{position:absolute;top:24px;right:35px;width:50px;height:50px;border-radius:50%;background:#f6d779}
+.cloud{position:absolute;top:30px;left:28px;font-size:44px;color:#fff}
+.hill{position:absolute;bottom:0;left:-5%;width:115%;height:49%;background:#82bd82;border-radius:55% 55% 0 0}
+.rainbed{position:absolute;bottom:24px;left:17%;width:68%;height:70px;background:#b2cba2;border:4px solid #dbe8c9;border-radius:50%;box-shadow:inset 0 10px #8ab9b0}
+.plant{position:absolute;bottom:68px;font-size:32px}.p1{left:23%}.p2{left:43%;bottom:83px}.p3{right:22%}
+.drop{position:absolute;left:35%;top:55px;font-size:23px;animation:fall 2.4s ease-in infinite}
+.drop.d2{left:55%;animation-delay:.8s}.drop.d3{left:70%;animation-delay:1.5s}
+@keyframes fall{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(170px);opacity:0}}
+.art-label{position:absolute;bottom:13px;left:13px;background:#fff;color:var(--green);padding:9px 12px;border-radius:12px;font-size:.78rem;font-weight:800;box-shadow:var(--shadow)}
+section{padding:58px 0}.section-head{max-width:700px;margin-bottom:26px}
+.kicker{color:var(--green2);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:850}
+.section-head h2{font-size:clamp(1.8rem,3.5vw,2.65rem);letter-spacing:-.035em;line-height:1.12;margin:9px 0 12px}
+.section-head p{color:var(--muted);margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:-26px;position:relative}
+.stat,.card,.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:21px;box-shadow:var(--shadow)}
+.stat strong{display:block;font-size:1.25rem;color:var(--green)}.stat span{color:var(--muted);font-size:.87rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.card-icon,.project-icon{display:grid;place-items:center;background:var(--mint);border-radius:14px;flex-shrink:0}
+.card-icon{width:47px;height:47px;font-size:23px;margin-bottom:15px}
+.card h3{margin:0 0 7px;font-size:1.08rem}.card p{color:var(--muted);font-size:.93rem;margin:0}
+.soft{background:#edf5ed}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field+.field{margin-top:13px}.form-grid .field+.field{margin-top:0}
+label{font-size:.9rem;font-weight:750}
+input,textarea,select{width:100%;border:1px solid #ccd9cd;border-radius:11px;background:#fff;padding:12px;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--green2);box-shadow:0 0 0 3px #28734c1a}
+input[aria-invalid=true]{border-color:#b13a3a}.error{color:#9a2b2b;font-size:.82rem;min-height:1.1em;margin:0}
+textarea{min-height:105px;resize:vertical}
+.result{display:none;margin-top:18px;padding:17px;border-radius:14px;background:var(--mint);border:1px solid #c6e2c9}.result.show{display:block}
+.result h3{margin:0 0 7px}.result ul{margin:8px 0 0;padding-left:20px}
+.sim-layout{display:grid;grid-template-columns:1fr .9fr;gap:20px}
+.range-row{display:flex;justify-content:space-between;gap:10px;font-weight:750;margin:17px 0 5px}.range-row output{color:var(--blue)}
+input[type=range]{padding:0;accent-color:var(--green2);box-shadow:none;border:0}
+.big-number{font-size:clamp(2.1rem,4vw,3.3rem);font-weight:850;color:var(--blue);letter-spacing:-.04em;line-height:1.1}
+.subtle{color:var(--muted);font-size:.88rem}
+.gauge{height:14px;border-radius:99px;background:#dbe8ef;overflow:hidden;margin:6px 0}.gauge i{display:block;height:100%;background:linear-gradient(90deg,#5aa6cc,#26678c);transition:width .3s}
+.gauge-legend{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+.fact{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}.fact b{display:block;font-size:1.05rem;color:var(--green)}.fact span{font-size:.78rem;color:var(--muted)}
+.project-tools{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}.project-tools input{flex:1;min-width:180px}
+.project-list{display:grid;gap:12px}
+.project{display:flex;align-items:flex-start;gap:13px;border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}
+.project-icon{width:42px;height:42px;font-size:21px;border-radius:12px}.project>div:last-child{flex:1;min-width:0}
+.project h3{font-size:1rem;margin:0 0 3px;overflow-wrap:anywhere}.project p{font-size:.84rem;color:var(--muted);margin:0;overflow-wrap:anywhere}
+.project-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.status{display:inline-block;border-radius:999px;padding:3px 9px;background:#f1f4e9;color:#5a6d36;font-size:.72rem;font-weight:800}
+.project select{width:auto;padding:5px 8px;font-size:.78rem;border-radius:9px}
+.project-remove{border:1px solid #e3c6c6;background:#fff7f7;color:#8b2929;border-radius:9px;padding:5px 9px;font-size:.78rem;font-weight:750}
+.empty-state{border:1px dashed #bfd1bf;border-radius:14px;padding:18px;color:var(--muted);text-align:center}
+.pilot-note{background:#f2f8ed;border:1px solid #dcebd5;border-radius:16px;padding:20px;margin-top:20px}.pilot-note h3{margin:0 0 8px;color:var(--green)}.pilot-note p{margin:0;color:var(--muted)}
+.map-placeholder{min-height:240px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(135deg,#e1eddb,#f5f1d9);display:grid;place-items:center;text-align:center;padding:25px}
+.map-content{background:#fff;padding:18px;border-radius:14px;max-width:320px;box-shadow:var(--shadow)}.map-content strong{display:block;color:var(--green)}.map-content p{font-size:.85rem;color:var(--muted);margin:6px 0 0}
+.notice{font-size:.8rem;color:var(--muted);border-left:3px solid #a8c8a8;padding:8px 12px;margin-top:15px}
+.cta{background:var(--green);color:#fff;border-radius:22px;padding:30px;display:flex;justify-content:space-between;align-items:center;gap:22px}.cta h2{margin:0 0 7px;font-size:1.7rem}.cta p{margin:0;color:#d8e9dc}
+.footer{background:#103b29;color:#dbe9de;padding:27px 0;margin-top:55px}.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.82rem}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#173e2b;color:#fff;padding:12px 17px;border-radius:12px;box-shadow:var(--shadow);z-index:30;display:none;max-width:calc(100% - 28px)}.toast.show{display:block}
+.ck{display:flex;gap:10px;align-items:flex-start;font-weight:500;padding:8px 0;cursor:pointer}.ck input{width:18px;height:18px;margin-top:3px;padding:0;accent-color:var(--green2);box-shadow:none;flex-shrink:0}
+#ckBar{background:linear-gradient(90deg,#7bc38f,#28734c)}.ck-text{margin:8px 0 0;font-weight:650;color:var(--green)}
+.buckets{margin-top:12px;font-size:1.05rem;line-height:1.5;overflow-wrap:anywhere}
+.plants{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.plant-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px}
+.plant-card h4{margin:0 0 2px;font-size:1.02rem}.plant-card em{display:block;color:var(--muted);font-size:.84rem;margin-bottom:8px}.plant-card p{margin:8px 0 0;font-size:.86rem;color:var(--muted)}
+@media(max-width:800px){.plants{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+#map{height:380px;border-radius:16px;border:1px solid var(--line);position:relative;z-index:0;isolation:isolate;background:#e6efe3}
+.map-fail{display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted)}
+.skip-link{position:absolute;left:12px;top:-60px;background:#fff;color:var(--green);padding:10px 14px;border-radius:10px;z-index:100;font-weight:800}.skip-link:focus{top:12px}
+a:focus-visible,button:focus-visible,.btn:focus-visible{outline:3px solid #f0c75e;outline-offset:3px}
+@media(max-width:800px){.hero-grid,.sim-layout,.grid2{grid-template-columns:1fr}.hero{padding:44px 0}.grid3,.stats{grid-template-columns:1fr 1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%}.topbar{position:static}html{scroll-padding-top:12px}.cta{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.wrap{width:calc(100% - 24px)}.grid3,.stats,.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.hero h1{font-size:2.55rem}section{padding:42px 0}.navlinks{display:grid;grid-template-columns:repeat(2,1fr)}.cta{padding:23px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.drop{animation:none;opacity:1}.btn,.gauge i{transition:none}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+a,button,select,input,textarea{touch-action:manipulation}
+a,button{-webkit-tap-highlight-color:rgba(40,115,76,.18)}
+.sim-mini,.map-tip{display:none}
+@media(pointer:coarse){
+ .btn,.project-remove,.project select{min-height:44px}
+ .project select,.project-remove{font-size:16px}
+ .leaflet-touch .leaflet-bar a{width:40px;height:40px;line-height:40px;font-size:22px}
+ .map-tip{display:block;margin:6px 0 0}
+ input[type=range]{min-height:36px}
+}
+@media(hover:none){.btn:hover{transform:none;filter:none}}
+@media(max-width:800px){
+ html{scroll-padding-top:72px}
+ .topbar{position:sticky;padding:8px 0}
+ .nav{flex-direction:row;align-items:center;gap:10px}
+ .brand{font-size:1rem;flex-shrink:0}.brand small{display:none}.logo{width:38px;height:38px;font-size:20px;border-radius:12px}
+ .navlinks{position:relative;flex:1;min-width:0;width:auto;display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+ .navlinks::-webkit-scrollbar{display:none}
+ .navlinks a{flex:0 0 auto;white-space:nowrap;padding:10px 12px}
+ .sim-mini{display:block;position:sticky;bottom:12px;margin-top:16px;background:var(--green);color:#fff;border-radius:12px;padding:10px 14px;font-size:.92rem;text-align:center;box-shadow:var(--shadow)}
+ .hero-art{padding:14px}
+}
+@media(max-width:520px){
+ .brand>span:last-child{display:none}
+ #map{height:320px}
+ .actions{flex-direction:column;align-items:stretch}
+ .actions .btn,.cta .btn,.project-tools .btn{width:100%}
+}
+.ai-box{margin-top:16px;padding-top:14px;border-top:1px dashed #b7d3ba}.ai-box h3{margin:0 0 8px}
+.ai-msg p{margin:0 0 8px}.ai-msg ul{margin:0 0 8px;padding-left:20px}
+.ai-user{font-weight:700;color:var(--green);margin:12px 0 6px}
+.ai-form{display:flex;gap:8px;margin-top:10px}.ai-form input{flex:1;min-width:0}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<noscript><p style="margin:0;padding:12px;text-align:center;background:#fff3cd;color:#5a4500">Ative o JavaScript para usar o assistente, o simulador e os projetos.</p></noscript>
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="#inicio" aria-label="VerdeVivo Brasil - início"><span class="logo" aria-hidden="true">🌱</span><span>VerdeVivo Brasil<small>Sustentabilidade inteligente</small></span></a>
+    <nav class="navlinks" aria-label="Navegação principal">
+      <a href="#inicio">Início</a><a href="#sobre">Sobre</a><a href="#jardim">Jardim</a><a href="#plantas">Plantas</a><a href="#ia">Assistente</a><a href="#simulador">Simulador</a><a href="#projetos">Projetos</a><a href="#mapa">Mapa</a>
+    </nav>
+  </div>
+</header>
+<main id="conteudo">
+<section class="hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">🌎 Comunidades • Escolas • Natureza</span>
+      <h1>Um Brasil mais verde <span>começa aqui.</span></h1>
+      <p>Use tecnologia para aprender sobre jardins de chuva, identificar desafios locais e transformar boas ideias em ações sustentáveis.</p>
+      <div class="actions"><a class="btn btn-primary" href="#ia">🌿 Abrir assistente ambiental</a><a class="btn btn-light" href="#simulador">💧 Simular chuva</a></div>
+    </div>
+    <div class="hero-art" role="img" aria-label="Ilustração de um jardim de chuva">
+      <div class="landscape"><div class="sun"></div><div class="cloud">☁</div><div class="hill"></div><div class="rainbed"></div><span class="plant p1">🌾</span><span class="plant p2">🌿</span><span class="plant p3">🌱</span><span class="drop">💧</span><span class="drop d2">💧</span><span class="drop d3">💧</span><div class="art-label">Jardins de chuva: natureza em ação</div></div>
+    </div>
+  </div>
+</section>
+<div class="wrap stats">
+  <div class="stat"><strong>💧 Água</strong><span>Aprender sobre chuva e infiltração</span></div>
+  <div class="stat"><strong>🌱 Comunidade</strong><span>Valorizar iniciativas locais</span></div>
+  <div class="stat"><strong>🧠 Orientação</strong><span>Guiar ações sustentáveis</span></div>
+</div>
+<section id="sobre">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Nossa missão</span><h2>Da observação à ação ambiental</h2><p>O VerdeVivo Brasil aproxima educação ambiental, inovação e participação comunitária. Começamos com ferramentas simples e evoluímos para uma plataforma de apoio a projetos locais.</p></div>
+    <div class="grid3">
+      <article class="card"><div class="card-icon">🧠</div><h3>Assistente ambiental</h3><p>Receba orientações educativas para alagamentos, resíduos e falta de áreas verdes.</p></article>
+      <article class="card"><div class="card-icon">🌧️</div><h3>Laboratório da chuva</h3><p>Estime quanta água escoa de cada tipo de superfície e por que a drenagem importa.</p></article>
+      <article class="card"><div class="card-icon">🏫</div><h3>Escolas e comunidades</h3><p>Cadastre iniciativas, acompanhe o andamento e incentive ações coletivas.</p></article>
+    </div>
+  </div>
+  <div class="wrap pilot-note">
+    <h3>📍 Possível território-piloto: Nilópolis e Baixada Fluminense</h3>
+    <p>O projeto pode começar com atividades educativas em escolas e comunidades da região. Esta indicação é uma proposta de piloto — não representa parceria oficial, mapeamento confirmado nem dados ambientais verificados.</p>
+  </div>
+</section>
+<section class="soft" id="jardim">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Conteúdo educativo</span><h2>O que é um jardim de chuva?</h2><p>Uma área rebaixada e vegetada que recebe a água escoada de telhados, calçadas e ruas e a deixa infiltrar aos poucos. Ajuda a reduzir alagamentos, recarregar o lençol freático, filtrar poluentes e trazer biodiversidade para a cidade.</p></div>
+    <div class="grid2">
+      <article class="card"><div class="card-icon">📍</div><h3>1. Escolha o local</h3><p>Observe por onde a água corre quando chove. Mantenha distância de fundações, fossas e redes subterrâneas, conforme orientação técnica.</p></article>
+      <article class="card"><div class="card-icon">🧪</div><h3>2. Avalie o solo</h3><p>Verifique em quanto tempo a água infiltra. Ela não deve ficar parada por mais de um ou dois dias, para evitar mau cheiro e focos de mosquitos.</p></article>
+      <article class="card"><div class="card-icon">🌿</div><h3>3. Escolha plantas nativas</h3><p>Prefira espécies da sua região que toleram tanto encharcamento quanto períodos secos. Viveiros locais e técnicos ambientais podem orientar.</p></article>
+      <article class="card"><div class="card-icon">🔧</div><h3>4. Planeje a manutenção</h3><p>Limpe entradas de água, retire resíduos, controle plantas invasoras e inspecione o jardim após chuvas fortes.</p></article>
+    </div>
+    <div class="panel" style="margin-top:20px">
+      <h3 style="margin-top:0">✅ Checklist: seu espaço está pronto?</h3>
+      <p class="subtle" style="margin-top:0">Marque o que já está resolvido. É um guia de conversa, não um laudo técnico.</p>
+      <div id="checklist"></div>
+      <div class="gauge" role="img" aria-label="Progresso do checklist"><i id="ckBar" style="width:0%"></i></div>
+      <p class="ck-text" id="ckText" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+<section id="plantas">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Guia de plantas nativas</span><h2>Que plantas usar no seu bioma?</h2><p>Escolha o bioma e veja exemplos de espécies nativas e a zona do jardim em que costumam ser usadas: o centro recebe mais água e a borda, menos.</p></div>
+    <div class="panel">
+      <div class="field" style="max-width:340px"><label for="biome">Bioma da sua região</label><select id="biome"></select></div>
+      <div id="plantOut" aria-live="polite" style="margin-top:14px"></div>
+    </div>
+    <p class="notice">Exemplos educativos para orientar a conversa com um viveiro ou técnico local: confirme a ocorrência natural da espécie na sua região e a origem das mudas. Evite exóticas invasoras, como o lírio-do-brejo (<em>Hedychium coronarium</em>), comum em jardins úmidos.</p>
+  </div>
+</section>
+<section class="soft" id="ia">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Assistente ambiental</span><h2>O que está acontecendo no seu entorno?</h2><p>Selecione um problema observado. Você recebe orientações essenciais na hora e, em seguida, uma resposta de IA para o seu caso, com espaço para novas perguntas.</p></div>
+    <div class="panel">
+      <form id="diagnosticForm">
+        <div class="form-grid">
+          <div class="field"><label for="problem">Problema observado</label><select id="problem"><option value="flood">Alagamento ou água acumulada</option><option value="green">Poucas áreas verdes</option><option value="waste">Lixo ou bueiro obstruído</option><option value="school">Educação ambiental na escola</option></select></div>
+          <div class="field"><label for="place">Onde acontece</label><select id="place"><option>Comunidade</option><option>Escola</option><option>Rua ou praça</option><option>Outro espaço público</option></select></div>
+          <div class="field full"><label for="description">Descreva o que observou (opcional)</label><textarea id="description" maxlength="500" placeholder="Ex.: a água fica acumulada perto da entrada da escola quando chove..."></textarea></div>
+        </div>
+        <div class="actions"><button class="btn btn-green" type="submit">🔎 Ver orientações</button><button class="btn btn-outline" type="reset">Limpar</button></div>
+      </form>
+      <div id="diagnosticResult" class="result" aria-live="polite"></div>
+    </div>
+    <p class="notice">As recomendações são educativas e não substituem avaliação profissional. O dimensionamento de jardins de chuva exige análise do solo, da drenagem e das redes subterrâneas.</p>
+  </div>
+</section>
+<section id="simulador">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Aprender experimentando</span><h2>Laboratório da chuva</h2><p>Escolha a chuva, a área e o tipo de superfície para ver quanta água vira escoamento.</p></div>
+    <div class="sim-layout">
+      <div class="panel">
+        <div class="range-row"><label for="rain">Precipitação no evento</label><output id="rainOut" for="rain">50 mm</output></div>
+        <input id="rain" type="range" min="5" max="150" step="5" value="50">
+        <div class="range-row"><label for="area">Área de contribuição</label><output id="areaOut" for="area">20 m²</output></div>
+        <input id="area" type="range" min="5" max="200" step="5" value="20">
+        <div class="field" style="margin-top:18px"><label for="surface">Tipo de superfície</label>
+          <select id="surface">
+            <option value="0.9">Telhado (coef. 0,90)</option>
+            <option value="0.85">Concreto ou asfalto (coef. 0,85)</option>
+            <option value="0.6">Terra compactada (coef. 0,60)</option>
+            <option value="0.25">Gramado (coef. 0,25)</option>
+          </select></div>
+        <p class="subtle">Coeficientes de escoamento são valores de referência educativos; os reais variam com inclinação, solo e umidade.</p>
+        <div class="sim-mini" aria-hidden="true">💧 <b id="miniRun">900 litros</b> escoam · <span id="miniPct">90%</span> da chuva</div>
+      </div>
+      <div class="panel" aria-live="polite">
+        <span class="kicker">Água que escoa</span>
+        <div class="big-number" id="runoffM3">0,90 m³</div>
+        <h3 id="runoffL" style="margin:4px 0 10px">900 litros</h3>
+        <div class="gauge" role="img" aria-label="Parte da chuva que escoa"><i id="gaugeBar" style="width:90%"></i></div>
+        <div class="gauge-legend"><span>Infiltra</span><span id="gaugePct">90% escoa</span></div>
+        <div class="facts">
+          <div class="fact"><b id="incident">1.000 L</b><span>caem sobre a área</span></div>
+          <div class="fact"><b id="buckets">45</b><span>baldes de 20 L escoando</span></div>
+          <div class="fact" style="grid-column:1/-1"><b id="gardenArea">—</b><span>área de jardim de referência (10% a 30% da área drenada)</span></div>
+        </div>
+        <div class="buckets" id="bucketRow" aria-hidden="true"></div>
+        <p class="subtle" style="margin:4px 0 0">Cada 💧 representa um balde de 20 L.</p>
+        <button class="btn btn-outline" type="button" id="copySim" style="margin-top:12px">📋 Copiar resumo</button>
+        <p class="notice">Este é o volume que escoa, não a capacidade de um jardim de chuva. Jardins costumam ocupar uma fração da área que drenam para eles (ordem de grandeza: 10% a 30%, conforme solo e projeto). Isso exige avaliação técnica.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="soft" id="projetos">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Ação coletiva</span><h2>Projetos verdes</h2><p id="projectIntro"></p></div>
+    <div class="grid2">
+      <div class="panel">
+        <h3 style="margin-top:0">Adicionar iniciativa</h3>
+        <form id="projectForm" novalidate>
+          <div class="field"><label for="projectName">Nome do projeto</label><input id="projectName" maxlength="90" autocomplete="off" aria-describedby="nameError" placeholder="Ex.: Jardim de chuva da escola"><p class="error" id="nameError" role="alert"></p></div>
+          <div class="field"><label for="projectType">Tipo de iniciativa</label><select id="projectType"><option>Escola</option><option>Comunidade</option></select></div>
+          <div class="field"><label for="projectDesc">Descrição breve</label><textarea id="projectDesc" maxlength="300" placeholder="Qual ação sustentável vocês querem realizar?"></textarea></div>
+          <div class="field"><label>Localização aproximada (opcional)</label>
+            <div class="actions" style="margin-top:0"><button class="btn btn-outline" type="button" id="pickBtn">📍 Marcar no mapa</button><button class="btn btn-outline" type="button" id="pickClear" hidden>Remover</button></div>
+            <p class="subtle" id="pickInfo" style="margin:0">Sem localização. Marque só uma região, nunca a sua casa.</p></div>
+          <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Não preencha<input id="website" tabindex="-1" autocomplete="off"></label></div>
+          <div class="actions"><button class="btn btn-green" type="submit">＋ Enviar projeto</button></div>
+        </form>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Iniciativas cadastradas</h3>
+        <div class="project-tools"><input id="projectSearch" type="search" aria-label="Buscar iniciativas" placeholder="Buscar por nome, tipo ou descrição"><button class="btn btn-outline" type="button" id="exportProjects">Exportar</button></div>
+        <p class="subtle" id="projectCount" aria-live="polite"></p>
+        <div class="project-list" id="projectList"></div>
+      </div>
+    </div>
+    <p class="notice" id="projectNotice"></p>
+  </div>
+</section>
+<section id="mapa">
+  <div class="wrap">
+    <div class="section-head"><span class="kicker">Visão de futuro</span><h2>Mapa de iniciativas ambientais</h2><p>Veja onde há iniciativas verdes cadastradas. Ao enviar a sua, marque uma região no mapa.</p></div>
+    <div id="map" role="region" aria-label="Mapa de iniciativas ambientais"></div>
+    <p class="subtle" id="mapInfo" aria-live="polite" style="margin:10px 0 0"></p>
+    <p class="subtle map-tip">No celular, a página rola normalmente sobre o mapa. Use os botões + e − ou a pinça para ampliar; para mover o mapa e marcar um local, toque em “Marcar no mapa”.</p>
+    <p class="subtle" id="mapHint" role="status" hidden>Clique no mapa para marcar a localização aproximada. <button type="button" class="project-remove" id="pickCancel">Cancelar</button></p>
+    <p class="notice">Os pontos são aproximados (arredondados para cerca de 1 km) e informados por quem enviou a iniciativa. No modo online, só aparecem após a revisão. Não são dados ambientais verificados.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap"><div class="cta"><div><h2>Pequenas ações, impacto coletivo.</h2><p>Aprender sobre a natureza é o primeiro passo para transformar nossas cidades.</p></div><a href="#projetos" class="btn btn-primary">Cadastrar uma iniciativa →</a></div></div>
+</section>
+</main>
+<footer class="footer"><div class="wrap footer-inner"><span><strong>🌱 VerdeVivo Brasil</strong> · Protótipo de hackathon</span><span>Educação ambiental • Tecnologia • Comunidade</span><span>Versão 0.8.1 · Protótipo educativo</span></div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(n,d=0)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>t.classList.remove('show'),2600);}
+
+/* Navegação: destaca a seção visível */
+const links=[...document.querySelectorAll('.navlinks a')],navBox=document.querySelector('.navlinks');
+function centerLink(a){if(navBox.scrollWidth<=navBox.clientWidth)return;navBox.scrollTo({left:a.offsetLeft-(navBox.clientWidth-a.offsetWidth)/2,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&links.some(a=>a.getAttribute('href')==='#'+e.target.id))links.forEach(a=>{const on=a.getAttribute('href')==='#'+e.target.id;a.classList.toggle('active',on);on?(a.setAttribute('aria-current','true'),centerLink(a)):a.removeAttribute('aria-current');});}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('main section[id]').forEach(s=>io.observe(s));
+
+/* Assistente ambiental */
+const rec={
+ flood:{t:'Investigar soluções de drenagem sustentável',i:['Registre local, frequência e extensão do alagamento.','Observe à distância e com segurança sinais de obstrução e avise o serviço municipal.','Considere estudar um jardim de chuva se as condições técnicas permitirem.','Peça avaliação profissional antes de escolher o local ou fazer obras.']},
+ green:{t:'Ampliar a vegetação local',i:['Identifique áreas disponíveis e autorizadas para plantio.','Priorize espécies nativas adequadas ao clima e ao local.','Considere canteiros de chuva ou jardins educativos.','Planeje manutenção e participação da comunidade.']},
+ waste:{t:'Reduzir resíduos e comunicar riscos',i:['Registre a ocorrência sem se aproximar de água contaminada.','Encaminhe o relato ao órgão municipal responsável.','Organize ações educativas sobre descarte correto.','Não entre em bueiros nem remova resíduos perigosos.']},
+ school:{t:'Criar um projeto de educação ambiental',i:['Organize uma observação do entorno escolar.','Crie um diário de chuva, resíduos e vegetação.','Planeje uma horta ou jardim educativo com autorização.','Acompanhe atividades e resultados ao longo do semestre.']}
+};
+$('diagnosticForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const r=rec[$('problem').value],d=$('description').value.trim(),box=$('diagnosticResult');
+ box.innerHTML='<h3>🌿 '+r.t+'</h3><p><strong>Local:</strong> '+esc($('place').value)+'</p><ul>'+r.i.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(d?'<p><strong>Sua observação (só nesta sessão):</strong> '+esc(d)+'</p>':'')+'<p class="subtle">Orientação educativa predefinida; não é diagnóstico técnico nem análise do seu texto.</p>';
+ box.classList.add('show');box.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+$('diagnosticForm').addEventListener('reset',()=>$('diagnosticResult').classList.remove('show'));
+
+/* Checklist de viabilidade */
+const CK=['Sei de onde vem a água (telhado, calha ou rua).','Há espaço livre, afastado de fundações, fossas e redes subterrâneas.','O solo deixa a água infiltrar em até um ou dois dias.','Tenho autorização de quem é responsável pelo espaço.','Há pessoas dispostas a cuidar da manutenção.'];
+const ckBox=$('checklist');
+function ckUpdate(){
+ const n=[...ckBox.querySelectorAll('input')].filter(b=>b.checked).length;
+ $('ckBar').style.width=Math.round(n/CK.length*100)+'%';
+ const v=n===0?'Marque o que já está resolvido no seu espaço.':n<3?'Início de conversa: reúna mais informações antes de avançar.':n<CK.length?'Bom caminho: resolva os itens pendentes para pedir avaliação técnica.':'Tudo em ordem: o próximo passo é pedir avaliação técnica e desenhar o projeto.';
+ $('ckText').textContent=n+' de '+CK.length+' itens. '+v;
+}
+CK.forEach(t=>{const l=document.createElement('label');l.className='ck';const c=document.createElement('input');c.type='checkbox';c.addEventListener('change',ckUpdate);const sp=document.createElement('span');sp.textContent=t;l.append(c,sp);ckBox.append(l);});
+ckUpdate();
+
+/* Laboratório da chuva */
+function sim(){
+ const r=+$('rain').value,a=+$('area').value,c=+$('surface').value,inc=r*a,run=inc*c;
+ $('rainOut').textContent=r+' mm';$('areaOut').textContent=a+' m²';
+ $('runoffM3').textContent=fmt(run/1000,2)+' m³';$('runoffL').textContent=fmt(Math.round(run))+' litros';
+ $('incident').textContent=fmt(inc)+' L';$('buckets').textContent=fmt(Math.round(run/20));$('gardenArea').textContent=fmt(a*.1,1)+' a '+fmt(a*.3,1)+' m²';
+ const nb=Math.round(run/20),sh=Math.min(nb,60);$('bucketRow').textContent='💧'.repeat(sh)+(nb>sh?' +'+fmt(nb-sh):'');
+ $('gaugeBar').style.width=Math.round(c*100)+'%';$('gaugePct').textContent=Math.round(c*100)+'% escoa';$('miniRun').textContent=fmt(Math.round(run))+' litros';$('miniPct').textContent=Math.round(c*100)+'%';
+}
+function copyText(t){
+ if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t);
+ return new Promise((ok,no)=>{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;opacity:0;top:0';document.body.append(a);a.select();let r=false;try{r=document.execCommand('copy');}catch(_){}a.remove();r?ok():no();});
+}
+$('copySim').addEventListener('click',()=>{
+ const t='Laboratório da chuva · VerdeVivo Brasil\nChuva: '+$('rainOut').textContent+' · Área: '+$('areaOut').textContent+' · Superfície: '+$('surface').selectedOptions[0].textContent+'\nÁgua que escoa: '+$('runoffM3').textContent+' ('+$('runoffL').textContent+', cerca de '+$('buckets').textContent+' baldes de 20 L)\nÁrea de jardim de referência: '+$('gardenArea').textContent+'\nValores educativos; exigem avaliação técnica.';
+ copyText(t).then(()=>toast('Resumo copiado.')).catch(()=>toast('Não foi possível copiar.'));
+});
+['rain','area','surface'].forEach(id=>$(id).addEventListener('input',sim));sim();
+
+/* Projetos — modo online (Supabase) se SB estiver preenchido; senão, salva só no navegador */
+const SB={url:'https://hxfknwqqazyphtmprhfj.supabase.co',key:'sb_publishable_l3IsFNGy_MPWPgNK1mgL9Q_bFZUTvjI'}; // <- preencha com a Project URL e a chave anon/publishable do Supabase
+const REMOTE=!!(SB.url&&SB.key);
+const KEY='verdevivo-projetos-v1',STATUS=['Em planejamento','Em andamento','Concluído'];
+const demos=[{name:'Horta e jardim de chuva escolar',type:'Escola',desc:'Exemplo de iniciativa educativa',status:'Em planejamento'},{name:'Mutirão de áreas verdes',type:'Comunidade',desc:'Exemplo de ação comunitária',status:'Em andamento'}];
+let saved=[],online=[],pending=[],loadState=REMOTE?'loading':'ok';
+try{saved=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(saved))saved=[];}catch(_){saved=[];}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(_){toast('Não foi possível salvar neste navegador.');}};
+const api=(path,opt={})=>fetch(SB.url.replace(/\/$/,'')+'/rest/v1/'+path,{...opt,headers:{apikey:SB.key,'Content-Type':'application/json',...(opt.headers||{})}});
+async function loadOnline(){
+ loadState='loading';render();
+ try{
+  const q='&approved=eq.true&order=created_at.desc&limit=100';
+  let r=await api('projects?select=id,name,type,description,status,lat,lng'+q);
+  if(!r.ok)r=await api('projects?select=id,name,type,description,status'+q);
+  if(!r.ok)throw new Error(r.status);
+  online=(await r.json()).map(p=>({id:p.id,name:p.name,type:p.type,desc:p.description||'',status:p.status,lat:p.lat,lng:p.lng}));
+  loadState='ok';
+ }catch(_){loadState='error';}
+ render();
+}
+function card(p,mode){ // mode: 'local' | 'demo' | 'online'
+ const art=document.createElement('article');art.className='project';
+ const ic=document.createElement('div');ic.className='project-icon';ic.textContent=p.type==='Escola'?'🏫':'🌿';ic.setAttribute('aria-hidden','true');
+ const box=document.createElement('div');
+ const h=document.createElement('h3');h.textContent=p.name;
+ const t=document.createElement('p');t.textContent=p.type+' • '+({local:'Salvo neste navegador',demo:'Exemplo demonstrativo',online:'Comunidade',pending:'Enviado agora · só você vê isto até a aprovação'}[mode])+(p.desc?' • '+p.desc:'');
+ const row=document.createElement('div');row.className='project-row';
+ if(mode==='local'){
+  const sel=document.createElement('select');sel.setAttribute('aria-label','Situação de '+p.name);
+  STATUS.forEach(s=>{const o=document.createElement('option');o.textContent=s;o.selected=s===(p.status||STATUS[0]);sel.append(o);});
+  sel.addEventListener('change',()=>{p.status=sel.value;persist();toast('Situação atualizada.');});
+  const rm=document.createElement('button');rm.type='button';rm.className='project-remove';rm.textContent='Excluir';rm.setAttribute('aria-label','Excluir '+p.name);
+  rm.addEventListener('click',()=>{if(!confirm('Excluir "'+p.name+'" deste navegador?'))return;saved=saved.filter(x=>x.id!==p.id);persist();render();toast('Cadastro removido.');});
+  row.append(sel,rm);
+ }else{const s=document.createElement('span');s.className='status';s.textContent=p.status;row.append(s);}
+ box.append(h,t,row);art.append(ic,box);return art;
+}
+function render(){
+ const term=$('projectSearch').value.trim().toLocaleLowerCase('pt-BR');
+ const src=REMOTE?[...pending.filter(x=>!online.some(o=>o.name===x.name&&o.type===x.type)).map(p=>({p,m:'pending'})),...online.map(p=>({p,m:'online'}))]:[...saved.map(p=>({p,m:'local'})),...demos.map(p=>({p,m:'demo'}))];
+ const all=src.filter(x=>(x.p.name+' '+x.p.type+' '+(x.p.desc||'')).toLocaleLowerCase('pt-BR').includes(term));
+ const list=$('projectList');list.replaceChildren(...all.map(x=>card(x.p,x.m)));
+ const msg=loadState==='loading'?'Carregando iniciativas…':loadState==='error'?'Não foi possível carregar as iniciativas agora. Tente novamente mais tarde.':!all.length?(REMOTE&&!online.length?'Ainda não há iniciativas aprovadas. Seja o primeiro a enviar!':'Nenhuma iniciativa encontrada. Tente outro termo.'):'';
+ if(msg){const d=document.createElement('div');d.className='empty-state';d.textContent=msg;if(loadState==='error'){const b=document.createElement('button');b.type='button';b.className='btn btn-outline';b.style.marginTop='10px';b.textContent='Tentar novamente';b.addEventListener('click',loadOnline);d.append(document.createElement('br'),b);}list.append(d);}
+ $('projectCount').textContent=REMOTE?(loadState==='ok'?online.length+' iniciativa(s) aprovada(s).':''):saved.length+' cadastro(s) neste navegador · '+demos.length+' exemplos demonstrativos.';
+ renderMap();
+}
+$('projectIntro').textContent=REMOTE?'Envie uma iniciativa da sua escola ou comunidade. Depois de uma revisão rápida, ela aparece aqui para todos.':'Cadastre iniciativas da sua escola ou comunidade. Neste modo, os cadastros ficam salvos só neste navegador e dispositivo.';
+$('projectNotice').textContent=REMOTE?'Privacidade: o que você envia fica público depois de aprovado. Evite nomes completos, telefones, endereços residenciais ou dados de crianças.':'Privacidade: evite nomes completos, telefones, endereços residenciais ou dados de crianças. Para compartilhar entre usuários, conecte o Supabase (veja o README).';
+$('projectForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if($('website').value)return; // honeypot anti-spam
+ const n=$('projectName'),name=n.value.trim(),desc=$('projectDesc').value.trim(),type=$('projectType').value,err=$('nameError');
+ let msg='';
+ if(name.length<3)msg='Informe um nome com pelo menos 3 caracteres.';
+ else if(!REMOTE&&saved.some(p=>p.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR')))msg='Já existe um projeto com esse nome.';
+ err.textContent=msg;n.setAttribute('aria-invalid',msg?'true':'false');
+ if(msg){n.focus();return;}
+ if(!REMOTE){
+  saved.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,type,desc,status:STATUS[0],createdAt:new Date().toISOString(),...(pick?{lat:pick.lat,lng:pick.lng}:{})});
+  persist();render();e.target.reset();clearPick();toast('Projeto salvo neste navegador.');return;
+ }
+ const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;
+ try{
+  const last=+localStorage.getItem('verdevivo-ultimo-envio')||0;
+  if(Date.now()-last<60000)throw new Error('espera');
+  const body={name,type,description:desc||null,status:STATUS[0]};
+  const post=b=>api('projects',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(b)});
+  let r=await post(pick?{...body,lat:pick.lat,lng:pick.lng}:body),semLoc=false;
+  if(!r.ok&&pick&&r.status===400){r=await post(body);semLoc=true;}
+  if(!r.ok){let t='';try{t=await r.text();}catch(_){}console.error('[VerdeVivo] Falha ao enviar projeto: HTTP',r.status,t);throw new Error('http-'+r.status);}
+  try{localStorage.setItem('verdevivo-ultimo-envio',String(Date.now()));}catch(_){}
+  pending.unshift({name,type,desc,status:'Aguardando revisão'});render();e.target.reset();clearPick();toast(semLoc?'Enviado sem localização (o mapa ainda não está habilitado no banco). Aparecerá após a revisão.':'Enviado! Sua iniciativa aparecerá após a revisão.');
+ }catch(x){
+  const c=String(x.message).startsWith('http-')?x.message.slice(5):'';
+  toast(x.message==='espera'?'Aguarde um minuto antes de enviar outra iniciativa.':c==='401'||c==='403'?'O banco recusou o envio (código '+c+'). Verifique as políticas de segurança (RLS) do Supabase.':c?'Não foi possível enviar (erro '+c+'). Tente novamente.':'Não foi possível enviar agora. Verifique sua conexão e tente novamente.');
+ }
+ btn.disabled=false;
+});
+$('projectName').addEventListener('input',()=>{$('nameError').textContent='';$('projectName').setAttribute('aria-invalid','false');});
+$('projectSearch').addEventListener('input',render);
+$('exportProjects').addEventListener('click',()=>{
+ const data=REMOTE?online:saved;
+ if(!data.length){toast('Nenhum cadastro para exportar.');return;}
+ const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}));
+ const a=document.createElement('a');a.href=url;a.download='verdevivo-projetos.json';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Arquivo exportado.');
+});
+/* Assistente de IA (Supabase Edge Function): complementa as orientações predefinidas */
+const AI_URL=REMOTE?SB.url.replace(/\/$/,'')+'/functions/v1/assistente':'';
+let chat=[],aiBusy=false,aiRun=0;
+function fillText(el,text){
+ el.replaceChildren();let ul=null;
+ text.split('\n').forEach(line=>{
+  const t=line.trim();
+  if(!t){ul=null;return;}
+  if(t.startsWith('- ')){if(!ul){ul=document.createElement('ul');el.append(ul);}const li=document.createElement('li');li.textContent=t.slice(2);ul.append(li);}
+  else{ul=null;const p=document.createElement('p');p.textContent=t;el.append(p);}
+ });
+}
+async function askAI(out,form,btn){
+ if(aiBusy)return;
+ const run=aiRun;aiBusy=true;btn.disabled=true;
+ const wait=document.createElement('p');wait.className='subtle';wait.textContent='Consultando o assistente…';out.append(wait);
+ const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),30000);
+ try{
+  const r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB.key},body:JSON.stringify({messages:chat.slice(-9)}),signal:ctl.signal});
+  if(!r.ok){let t='';try{t=await r.text();}catch(_){}console.error('[VerdeVivo] Assistente de IA: HTTP',r.status,t);throw new Error(r.status===429?'rate':'http-'+r.status);}
+  const d=await r.json();
+  if(!d||typeof d.answer!=='string'||!d.answer.trim())throw new Error('fail');
+  if(run!==aiRun)return;
+  chat.push({role:'assistant',content:d.answer});
+  const msg=document.createElement('div');msg.className='ai-msg';fillText(msg,d.answer);wait.replaceWith(msg);
+ }catch(x){
+  if(run!==aiRun)return;
+  if(chat.length>1&&chat[chat.length-1].role==='user')chat.pop();
+  const m=String(x.message),code=m.startsWith('http-')?' (erro '+m.slice(5)+')':'';
+  if(!code&&m!=='rate'&&m!=='fail')console.error('[VerdeVivo] Assistente de IA:',x);
+  wait.textContent=m==='rate'?'Muitas perguntas em pouco tempo. Aguarde um minuto e tente de novo.':'O assistente de IA está indisponível agora'+code+'. As orientações acima continuam valendo.';
+ }finally{
+  clearTimeout(timer);
+  if(run===aiRun){aiBusy=false;btn.disabled=false;if(chat.length>1)form.hidden=false;}
+ }
+}
+$('diagnosticForm').addEventListener('submit',()=>{
+ if(!AI_URL)return;
+ aiRun++;aiBusy=false;
+ const desc=$('description').value.trim();
+ chat=[{role:'user',content:'Problema observado: '+$('problem').selectedOptions[0].textContent+'. Local: '+$('place').value+'.'+(desc?' Observação: '+desc:'')}];
+ const wrap=document.createElement('div'),h=document.createElement('h3'),out=document.createElement('div'),f=document.createElement('form'),inp=document.createElement('input'),b=document.createElement('button'),note=document.createElement('p');
+ wrap.className='ai-box';h.textContent='🤖 Resposta do assistente (IA)';
+ f.className='ai-form';f.hidden=true;inp.type='text';inp.maxLength=300;inp.placeholder='Faça outra pergunta…';inp.setAttribute('aria-label','Pergunta ao assistente');
+ b.type='submit';b.className='btn btn-green';b.textContent='Perguntar';f.append(inp,b);
+ note.className='subtle';note.textContent='Resposta gerada por IA: pode conter erros e é apenas educativa. O texto digitado é enviado a um serviço de IA; não inclua dados pessoais.';
+ f.addEventListener('submit',ev=>{
+  ev.preventDefault();const q=inp.value.trim();if(!q||aiBusy)return;
+  const u=document.createElement('p');u.className='ai-user';u.textContent='Você: '+q;out.append(u);
+  chat.push({role:'user',content:q});inp.value='';f.hidden=true;askAI(out,f,b);
+ });
+ wrap.append(h,out,f,note);$('diagnosticResult').append(wrap);
+ askAI(out,f,b);
+});
+$('diagnosticForm').addEventListener('reset',()=>{aiRun++;aiBusy=false;chat=[];});
+
+/* Guia de plantas nativas */
+const C='centro (mais úmida)',I='zona intermediária',B='borda (mais seca)';
+const BIOMAS={
+ mata:{n:'Mata Atlântica',d:'Clima úmido e chuvas bem distribuídas: prefira herbáceas de sub-bosque que gostam de solo úmido.',p:[['Cana-do-brejo','Costus spiralis',C,'Herbácea de solo úmido, com inflorescência vistosa que atrai polinizadores.'],['Papiro-brasileiro','Cyperus giganteus',C,'Ciperácea que tolera encharcamento prolongado.'],['Falso-íris','Neomarica gracilis',B,'Tolera solo úmido e períodos mais secos.']]},
+ amazonia:{n:'Amazônia',d:'Chuvas intensas e calor constante: espécies de áreas alagáveis e margens de igarapé.',p:[['Tália','Thalia geniculata',C,'Planta de brejo de folhas grandes, adaptada a áreas alagadas.'],['Helicônias nativas','Heliconia spp.',I,'Escolha espécies nativas da sua região: muitas helicônias cultivadas são de outras origens.'],['Costus','Costus spp.',I,'Várias espécies nativas; prefira as que ocorrem naturalmente perto de você.']]},
+ cerrado:{n:'Cerrado',d:'Estação seca marcada e solos bem drenados, com campos úmidos nas veredas: misture plantas de brejo e de campo.',p:[['Ciperáceas de campo úmido','Cyperus e Rhynchospora spp.',C,'Ocupam o ponto mais úmido; confirme as espécies locais com um viveiro.'],['Capim-rabo-de-burro','Andropogon bicornis',I,'Gramínea que forma touceiras em áreas úmidas abertas.'],['Gramíneas nativas','Paspalum spp.',B,'Cobrem o solo e resistem à seca; escolha espécies nativas locais.']]},
+ caatinga:{n:'Caatinga',d:'Semiárido, com chuvas curtas e intensas: o jardim funciona sobretudo como área de infiltração; use espécies resistentes à seca.',p:[['Marmeleiro','Croton blanchetianus',B,'Arbusto nativo muito comum, resistente à seca.'],['Jurema-preta','Mimosa tenuiflora',B,'Leguminosa nativa de porte arbustivo a arbóreo; planeje o espaço.'],['Caroá','Neoglaziovia variegata',B,'Bromélia nativa resistente à seca; as folhas podem ter espinhos.']]},
+ pampa:{n:'Pampa',d:'Clima subtropical, campos abertos e banhados: gramíneas e plantas de campo úmido.',p:[['Gravatá-do-banhado','Eryngium pandanifolium',C,'Planta de banhado com folhas longas e rígidas; as bordas podem ter espinhos.'],['Capim-caninha','Andropogon lateralis',I,'Gramínea de touceira típica dos campos do sul.'],['Grama-forquilha','Paspalum notatum',B,'Gramínea nativa que resiste a pisoteio e a períodos secos.']]},
+ pantanal:{n:'Pantanal',d:'Planície que alterna cheia e seca: espécies adaptadas a longos períodos alagados.',p:[['Papiro-brasileiro','Cyperus giganteus',C,'Ciperácea que tolera encharcamento prolongado.'],['Tália','Thalia geniculata',C,'Planta de brejo de folhas grandes, adaptada a áreas alagadas.'],['Gramíneas nativas','Paspalum spp.',B,'Cobrem o solo nas áreas que secam primeiro.']]}
+};
+const bsel=$('biome');
+Object.keys(BIOMAS).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=BIOMAS[k].n;bsel.append(o);});
+function showPlants(){
+ const b=BIOMAS[bsel.value],d=document.createElement('p'),g=document.createElement('div');
+ d.className='subtle';d.textContent=b.d;g.className='plants';
+ b.p.forEach(([nm,sci,z,nt])=>{
+  const c=document.createElement('div'),h=document.createElement('h4'),e=document.createElement('em'),zz=document.createElement('span'),q=document.createElement('p');
+  c.className='plant-card';h.textContent=nm;e.textContent=sci;zz.className='status';zz.textContent=z;q.textContent=nt;
+  c.append(h,e,zz,q);g.append(c);
+ });
+ $('plantOut').replaceChildren(d,g);
+}
+bsel.addEventListener('change',showPlants);showPlants();
+
+/* Mapa de iniciativas (Leaflet + OpenStreetMap). Coordenadas arredondadas a 2 casas (~1 km) por privacidade */
+const COARSE=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+let map=null,layer=null,pick=null,pickMarker=null,picking=false,mapKey='';
+function endPicking(){picking=false;$('mapHint').hidden=true;if(map){map.getContainer().style.cursor='';if(COARSE)map.dragging.disable();}}
+function clearPick(){pick=null;if(pickMarker){pickMarker.remove();pickMarker=null;}endPicking();$('pickInfo').textContent='Sem localização. Marque só uma região, nunca a sua casa.';$('pickClear').hidden=true;}
+function initMap(){
+ const el=$('map');
+ if(typeof L==='undefined'){el.textContent='Não foi possível carregar o mapa agora. Verifique sua conexão.';el.classList.add('map-fail');return;}
+ map=L.map(el,{scrollWheelZoom:false,dragging:!COARSE}).setView([-14.2,-51.9],4);
+ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+ layer=L.layerGroup().addTo(map);
+ map.on('click',ev=>{
+  if(!picking)return;
+  const ll=ev.latlng.wrap();
+  if(ll.lat<-34||ll.lat>5.5||ll.lng<-74.5||ll.lng>-28.5){toast('Marque um ponto dentro do Brasil.');return;}
+  pick={lat:+ll.lat.toFixed(2),lng:+ll.lng.toFixed(2)};
+  if(pickMarker)pickMarker.remove();
+  pickMarker=L.circleMarker([pick.lat,pick.lng],{radius:10,color:'#8a6d00',weight:2,fillColor:'#f0c75e',fillOpacity:.9}).addTo(map);
+  endPicking();
+  $('pickInfo').textContent='📍 Local aproximado: '+fmt(pick.lat,2)+', '+fmt(pick.lng,2)+' (precisão de cerca de 1 km).';
+  $('pickClear').hidden=false;toast('Local marcado. Conclua o envio do projeto.');
+  $('pickBtn').scrollIntoView({behavior:'smooth',block:'center'});
+ });
+}
+function renderMap(){
+ if(!map)return;
+ const pts=(REMOTE?online:saved).filter(p=>typeof p.lat==='number'&&typeof p.lng==='number');
+ const key=loadState+'|'+pts.map(p=>(p.id||'')+p.lat+p.lng+p.name+p.status).join('|');
+ if(key===mapKey)return;mapKey=key;
+ layer.clearLayers();
+ pts.forEach(p=>{
+  const d=document.createElement('div'),b=document.createElement('strong'),t=document.createElement('div');
+  b.textContent=p.name;t.textContent=p.type+' • '+(p.status||'');d.append(b,t);
+  L.circleMarker([p.lat,p.lng],{radius:9,color:'#174d36',weight:2,fillColor:'#28734c',fillOpacity:.85}).bindPopup(d).addTo(layer);
+ });
+ $('mapInfo').textContent=loadState==='loading'?'Carregando mapa…':pts.length?pts.length+' iniciativa(s) com localização aproximada.':'Nenhuma iniciativa com localização ainda. Ao enviar a sua, marque uma região no mapa.';
+ if(pts.length)map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])).pad(.4),{maxZoom:10});
+}
+$('pickBtn').addEventListener('click',()=>{
+ if(!map){toast('O mapa não está disponível agora.');return;}
+ picking=true;if(COARSE)map.dragging.enable();map.getContainer().style.cursor='crosshair';$('mapHint').hidden=false;$('map').scrollIntoView({behavior:'smooth',block:'center'});
+});
+$('pickCancel').addEventListener('click',endPicking);
+$('pickClear').addEventListener('click',clearPick);
+initMap();
+render();if(REMOTE)loadOnline();
+</script>
+</body>
+</html>
