@@ -2,7 +2,7 @@
 
 **Plataforma educativa para apoiar pessoas, escolas, comunidades e gestores públicos na adoção de jardins de chuva no Brasil.**
 
-> 🔗 **Demonstração:** _URL a definir_
+> 🔗 **Demonstração:** https://fabiodias-python.github.io/verdevivo/
 
 Criado por **Fábio** · Protótipo educativo · Versão 0.8
 
